@@ -1,4 +1,6 @@
 src/inprogress/
 venv
+.idea
 
+media/
 PERSONAL_NOTES.md
