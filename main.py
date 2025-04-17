@@ -2,6 +2,52 @@
 import argparse
 import requests
 from bs4 import BeautifulSoup
+import sympy as sp
+
+import math
+
+from src.lib.eq import System, Equation
+
+# Log 10 (default base)...
+# log(x) = log_10(x)
+
+# Log base 2...
+# log_2(x)
+
+# Natural log...
+# ln(x) = log_e(x)
+
+# Log base b...
+# log_b(x)
+
+# Change of base formula:
+# log_b(x) = log_c(x) / log_c(b)
+
+
+## EXAMPLES
+
+# log_2(8) = 3
+result = math.log(8, 2)
+print(result)
+assert result == 3
+
+
+
+# log_b(xy) = log_b(x) + log_b(y)
+
+# log_b(x/y) = log_b(x) - log_b(y)
+
+# log_b(x^y) = y * log_b(x)
+
+
+
+
+def test():
+    x, y = sp.symbols('x y')
+    eq1 = Equation.from_string("2*x + 3*y = 7")
+    eq2 = Equation.from_string("x - y = 1")
+    system = System((eq1, eq2))
+    print(system.solve(x, y))  # {x: 2, y: 1}
 
 
 def fetch_from_wikipedia(page, section_id):
@@ -18,10 +64,6 @@ def main(src: str, latex: bool, mathml: bool):
     print(src)
 
 
-
-f_x = lambda x: x**2
-
-f_x = lambda x: 6*x**3 + 14*x**2 - 25*x + 4
 
 # l: ast.Lambda
 # args, body = l.args, l.body
@@ -70,100 +112,25 @@ def process_bin_op(bin_op: ast.BinOp) -> str:
     return f"{lp}{lhs}{OPERATORS.get(type(op), '?')}{rhs}{rp}"
 
 
-# The difference between a function and an equation is that a function is a mapping from a domain to a codomain,
-# whereas an equation is a statement that two expressions are equal.
 
-# Can all equations be represented as functions?
-# Can all functions be represented as equations?
-
-# Answers:
-# 1. Yes, all equations can be represented as functions (???).
-# 2. No, not all functions can be represented as equations (???).
-
-
-
-class Equation:
+class Function:
     _type: str
-
-    def __init__(self, eq: str):
-        self.eq = eq
-        self.terms = []
-
-    @property
-    def number_of_terms(self):
-        return len(self.terms)
-
-    def parse(self):
-        # TODO: Work in progress.
-        ...
-
-    def latex(self):
-        # TODO: For a later iteration.
-        pass
-
-    def plot(self):
-        # TODO: For a later iteration.
-        pass
+    _degree: int
 
 
-class LinearEquation(Equation):
-    _type = 'linear'
-
-    def convert_to_standard_form(self):
-        # ax + b = 0
-        # ax + by + c = 0
-        ...
-
-    def convert_to_slope_intercept_form(self):
-        # y = mx + b
-        ...
-
-    def convert_to_point_slope_form(self):
-        # y - y1 = m(x - x1)
-        ...
-
-
-
-class QuadraticEquation(Equation):
-    _type = 'quadratic'
-
-
-class CubicEquation(Equation):
-    _type = 'cubic'
-
-
-class RationalEquation(Equation):
-    _type = 'rational'
-
-
-#class PolynomialEquation(Equation): _type = 'polynomial'
-# polynomial vs quadratic: degree > 2 (???)
-
-
-
-class SystemOfEquations:
-    def __init__(self, *eqs: Equation):
-        self.eqs = eqs
-
-    def solve_by_substitution(self):
-        ...
-
-    def solve_by_elimination(self):
-        ...
-
-    def solve_by_graphing(self):
-        ...
-
-
-
-def parse_function(func: callable):
+def parse_equation(lhs: callable, rhs: callable) -> Equation:
+    """
+    Takes in two mathematical expressions defined as Lambda functions and parses it into an Equation object.
+    :param func:
+    :return:
+    """
     import ast
     import inspect
 
     # parse the function
-    code = inspect.getsource(func)
+    lhs_code = inspect.getsource(lhs)
 
-    parsed = ast.parse(code)
+    parsed = ast.parse(lhs_code)
     print('parsed:', parsed)
 
     body = parsed.body[0]
@@ -218,7 +185,11 @@ def parse_function(func: callable):
     #breakpoint()
 
 
-parse_function(f_x)
+f_x = lambda x: x**2
+
+f_x = lambda x: 6*x**3 + 14*x**2 - 25*x + 4
+
+#parse_function(f_x)
 
 eq = '6x^3 + 14x^2 - 25x + 4'
 
@@ -227,7 +198,7 @@ number_of_terms = 4
 
 f_x = lambda x: (x + 2) / (x**2 + x - 1)
 
-parse_function(f_x)
+#parse_function(f_x)
 
 
 
@@ -238,13 +209,22 @@ from math import log
 
 f_x = lambda x: log(8, 2)
 
-parse_function(f_x)
+#parse_function(f_x)
 
 # log_b(A) = C <==> b^C = A
 
 # Product Rule: log_b(A) + log_b(C) = log_b(A * C)
 # Quotient Rule: log_b(A) - log_b(C) = log_b(A / C)
 # Power Rule: log_b(A^C) = C * log_b(A)
+
+
+eq = parse_equation(
+    lambda: log(5, 9) - log(5, 11),
+    lambda x: log(5, x)
+)
+
+
+eq_str = "log(5, 9) - log(5, 11) = log(5, x)"
 
 def apply_product_rule(log_func: callable):
     # 1. Verify that it satisfies the correct pattern...
