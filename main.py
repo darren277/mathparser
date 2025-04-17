@@ -43,11 +43,84 @@ assert result == 3
 
 
 def test():
+    # 1. Build an equation from a string
+    eq = Equation.from_string("x**2 + 1 = 5")
+    print(eq.type(), eq.degree)  # quadratic 2
+    print(eq.terms)  # [x**2, -4]
+
+    # 2. Solve
+    print(eq.solve())  # [-2, 2]
+
+    # 3. Pretty print
+    print(eq.latex())  # x^{2} + 1 = 5
+
+    # 4. Plot
+    eq.plot()
+    # pops up matplotlib window
+
     x, y = sp.symbols('x y')
     eq1 = Equation.from_string("2*x + 3*y = 7")
     eq2 = Equation.from_string("x - y = 1")
     system = System((eq1, eq2))
     print(system.solve(x, y))  # {x: 2, y: 1}
+
+# Logarithm example...
+eq = 'log_2(8)'
+
+from math import log
+
+f_x = lambda x: log(8, 2)
+
+#parse_function(f_x)
+
+# log_b(A) = C <==> b^C = A
+
+# Product Rule: log_b(A) + log_b(C) = log_b(A * C)
+# Quotient Rule: log_b(A) - log_b(C) = log_b(A / C)
+# Power Rule: log_b(A^C) = C * log_b(A)
+
+
+#eq = parse_equation(
+#    lambda: log(5, 9) - log(5, 11),
+#    lambda x: log(5, x)
+#)
+
+
+def test_logarithms():
+    LOCAL_DICT = {
+        'log': sp.log,  # base‑aware
+        'ln': sp.log,  # alias
+    }
+
+    expr = sp.sympify("log(x, 2) + ln(y)", locals=LOCAL_DICT)
+    #print(expr)
+
+
+    eq_str = "log(9, 5) - log(11, 5) = log(x, 5)"
+
+    # 1. Build an equation from a string
+    eq = Equation.from_string(eq_str)
+    print(eq.type(), eq.degree)  # quadratic 2
+
+    # 2. Solve
+    print(eq.solve())
+
+    # 3. Pretty print
+    #print(eq.latex())
+
+    # Apply product rule...
+    eq = eq.apply_quotient_rule()
+    print(eq.type(), eq.degree)
+    print(eq.terms)
+
+
+#test()
+
+test_logarithms()
+
+
+
+quit(23)
 
 
 def fetch_from_wikipedia(page, section_id):
@@ -106,29 +179,6 @@ f_x = lambda x: (x + 2) / (x**2 + x - 1)
 
 
 
-# Logarithm example...
-eq = 'log_2(8)'
-
-from math import log
-
-f_x = lambda x: log(8, 2)
-
-#parse_function(f_x)
-
-# log_b(A) = C <==> b^C = A
-
-# Product Rule: log_b(A) + log_b(C) = log_b(A * C)
-# Quotient Rule: log_b(A) - log_b(C) = log_b(A / C)
-# Power Rule: log_b(A^C) = C * log_b(A)
-
-
-eq = parse_equation(
-    lambda: log(5, 9) - log(5, 11),
-    lambda x: log(5, x)
-)
-
-
-eq_str = "log(5, 9) - log(5, 11) = log(5, x)"
 
 def apply_product_rule(log_func: callable):
     # 1. Verify that it satisfies the correct pattern...

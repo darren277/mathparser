@@ -41,6 +41,11 @@ class EquationOld:
 
 
 class LinearMixin:
+    symbolic: sp.Expr
+    lhs: sp.Expr
+    rhs: sp.Expr
+    expr: sp.Eq
+
     def to_standard(self):
         # ax + by + c = 0
         a, b, c = sp.Poly(self.symbolic).coeffs()
@@ -114,6 +119,39 @@ class Equation:
         if self.symbolic.is_rational_function():
             return 'rational'
         return 'other'
+
+    # ---------- logarithmic functions ----
+    def expand_logs(self):
+        """Return a *new* Equation with logs expanded."""
+        return Equation(sp.expand_log(self.lhs, force=True), sp.expand_log(self.rhs, force=True))
+
+    def combine_logs(self):
+        """Return a *new* Equation with logs combined."""
+        return Equation(sp.logcombine(self.lhs, force=True), sp.logcombine(self.rhs, force=True))
+
+    # -------- log‑rule engine --------
+    def apply_log_rule(self, rule: str):
+        """rule ∈ {'product', 'quotient', 'power'} -> new Equation"""
+        if rule not in {'product', 'quotient', 'power'}:
+            raise ValueError("rule must be 'product', 'quotient', or 'power'")
+
+        # pick the SymPy helper
+        if rule in {'product', 'quotient'}:
+            new_lhs = sp.logcombine(self.lhs, force=True)  # combine sums/diffs of logs
+        else:  # power
+            new_lhs = sp.expand_log(self.lhs, force=True)  # pull exponents in/out
+
+        # keep RHS unchanged, return a *new* Equation
+        return Equation(new_lhs, self.rhs)
+
+    def apply_product_rule(self):
+        return self.apply_log_rule('product')
+
+    def apply_quotient_rule(self):
+        return self.apply_log_rule('quotient')
+
+    def apply_power_rule(self):
+        return self.apply_log_rule('power')
 
 
 @dataclass(frozen=True)
