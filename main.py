@@ -81,108 +81,12 @@ OPERATORS = {
     ast.Pow: '^'
 }
 
-def process_bin_op(bin_op: ast.BinOp) -> str:
-    left = bin_op.left
-    right = bin_op.right
-    op = bin_op.op
-
-    print('left op right', left, op, right)
-
-    lp, rp = '', ''
-    # lp, rp = '(', ')'
-
-    if type(left) == ast.BinOp:
-        lhs = process_bin_op(left)
-    elif type(left) == ast.Constant:
-        lhs = left.value
-    elif type(left) == ast.Name:
-        lhs = left.id
-    else:
-        raise ValueError(f'Unexpected type: {type(left)}')
-
-    if type(right) == ast.BinOp:
-        rhs = process_bin_op(right)
-    elif type(right) == ast.Constant:
-        rhs = right.value
-    elif type(right) == ast.Name:
-        rhs = right.id
-    else:
-        raise ValueError(f'Unexpected type: {type(right)}')
-
-    return f"{lp}{lhs}{OPERATORS.get(type(op), '?')}{rhs}{rp}"
-
 
 
 class Function:
     _type: str
     _degree: int
 
-
-def parse_equation(lhs: callable, rhs: callable) -> Equation:
-    """
-    Takes in two mathematical expressions defined as Lambda functions and parses it into an Equation object.
-    :param func:
-    :return:
-    """
-    import ast
-    import inspect
-
-    # parse the function
-    lhs_code = inspect.getsource(lhs)
-
-    parsed = ast.parse(lhs_code)
-    print('parsed:', parsed)
-
-    body = parsed.body[0]
-
-    if type(body) != ast.Assign:
-        raise ValueError('Function must be a single assignment')
-
-    targets = body.targets
-    value = body.value
-
-    print('targets', targets)
-    print('value', value)
-
-    if type(value) != ast.Lambda:
-        raise ValueError('Function must be a lambda')
-
-    args = value.args
-    body = value.body
-
-    print('args', args)
-    # ast.arguments
-    print('args.args', args.args)
-    print('body', body)
-
-    s = ""
-
-    if type(body) == ast.BinOp:
-        s += process_bin_op(body)
-    elif type(body) == ast.Call:
-        # if special case of `log()`:
-        if type(body.func) == ast.Name and body.func.id == 'log':
-            s += 'log_'
-            x = body.args[0]
-            if type(x) == ast.Constant:
-                s += str(x.value)
-            elif type(x) == ast.BinOp:
-                s += process_bin_op(x)
-            else:
-                raise ValueError('Unexpected type')
-            base = body.args[1]
-            if type(base) == ast.Constant:
-                s += f"({base.value})"
-            else:
-                raise ValueError('Unexpected type')
-
-            #breakpoint()
-    else:
-        raise ValueError('Unexpected type')
-
-    print('s', s)
-
-    #breakpoint()
 
 
 f_x = lambda x: x**2
