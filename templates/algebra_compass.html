@@ -138,6 +138,41 @@
                 * A value table for sine/cosine/tangent
                 * More advanced trig identities or transformation patterns
         --->
+        <div class="card">
+            <h2>🧭 Interactive Unit Circle</h2>
+            <svg viewBox="-1.2 -1.2 2.4 2.4" width="100%" height="400" style="border: 1px solid #ccc; background: #fdfdfd">
+                <circle cx="0" cy="0" r="1" stroke="#333" stroke-width="0.01" fill="none" />
+
+                <!-- Axes -->
+                <line x1="-1.1" y1="0" x2="1.1" y2="0" stroke="#aaa" stroke-width="0.005" />
+                <line x1="0" y1="-1.1" x2="0" y2="1.1" stroke="#aaa" stroke-width="0.005" />
+
+                <!-- Angle markers and labels -->
+                <g font-size="0.05" text-anchor="middle" dominant-baseline="middle">
+                    <text x="1.05" y="0">0°</text>
+                    <text x="0.7" y="0.7">45°</text>
+                    <text x="0" y="1.05">90°</text>
+                    <text x="-0.7" y="0.7">135°</text>
+                    <text x="-1.05" y="0">180°</text>
+                    <text x="-0.7" y="-0.7">225°</text>
+                    <text x="0" y="-1.05">270°</text>
+                    <text x="0.7" y="-0.7">315°</text>
+                </g>
+
+                <!-- Points on circle -->
+                <g fill="red">
+                    <circle cx="1" cy="0" r="0.015" />
+                    <circle cx="0.707" cy="0.707" r="0.015" />
+                    <circle cx="0" cy="1" r="0.015" />
+                    <circle cx="-0.707" cy="0.707" r="0.015" />
+                    <circle cx="-1" cy="0" r="0.015" />
+                    <circle cx="-0.707" cy="-0.707" r="0.015" />
+                    <circle cx="0" cy="-1" r="0.015" />
+                    <circle cx="0.707" cy="-0.707" r="0.015" />
+                </g>
+            </svg>
+            <p style="font-size: 0.9rem; margin-top: 1rem;">This unit circle shows standard angles in degrees. Each point corresponds to the terminal point of the angle on a circle of radius 1 centered at the origin. Use this to remember sine = y, cosine = x.</p>
+        </div>
 
         <div class="card">
             <h2>✨ Big Picture</h2>
