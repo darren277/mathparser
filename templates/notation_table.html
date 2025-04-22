@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Symbol & LaTeX Table</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            background: #121212;
+            color: #fff;
+            padding: 2rem;
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .tab-button {
+            background: #222;
+            border: none;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            margin: 0 0.5rem;
+            cursor: pointer;
+            font-size: 1rem;
+            border-radius: 0.4rem;
+            transition: background 0.3s;
+        }
+
+        .tab-button:hover,
+        .tab-button.active {
+            background: #444;
+        }
+
+        .tab-content {
+            display: none;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 1rem 0;
+        }
+
+        th, td {
+            border: 1px solid #444;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        th {
+            background: #222;
+        }
+
+        td:hover {
+            background: #333;
+        }
+
+        .copied {
+            background: #4caf50 !important;
+            color: white;
+        }
+
+        .latex {
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+<h2 style="text-align: center;">Symbol & LaTeX Copy Table</h2>
+
+<div class="tabs">
+    <button class="tab-button active" data-tab="greek">Greek Letters</button>
+    <button class="tab-button" data-tab="latex">LaTeX Boilerplate</button>
+</div>
+
+<div id="greek" class="tab-content active">
+    <table>
+        <thead><tr><th>Symbol</th><th>Name</th><th>Unicode</th><th>LaTeX</th></tr></thead>
+        <tbody>
+            <tr data-symbol="α" data-latex="\\alpha"><td>α</td><td>Alpha</td><td>U+03B1</td><td class="latex">\\alpha</td></tr>
+            <tr data-symbol="β" data-latex="\\beta"><td>β</td><td>Beta</td><td>U+03B2</td><td class="latex">\\beta</td></tr>
+            <tr data-symbol="γ" data-latex="\\gamma"><td>γ</td><td>Gamma</td><td>U+03B3</td><td class="latex">\\gamma</td></tr>
+            <tr data-symbol="Δ" data-latex="\\Delta"><td>Δ</td><td>Capital Delta</td><td>U+0394</td><td class="latex">\\Delta</td></tr>
+            <tr data-symbol="π" data-latex="\\pi"><td>π</td><td>Pi</td><td>U+03C0</td><td class="latex">\\pi</td></tr>
+        </tbody>
+    </table>
+</div>
+
+<div id="latex" class="tab-content">
+    <table>
+        <thead><tr><th>Description</th><th>LaTeX</th></tr></thead>
+        <tbody>
+            <tr data-latex="\\sum_{i=1}^{n} i"><td>Summation</td><td class="latex">\\sum_{i=1}^{n} i</td></tr>
+            <tr data-latex="\\frac{a}{b}"><td>Fraction</td><td class="latex">\\frac{a}{b}</td></tr>
+            <tr data-latex="\\log_{b} x"><td>Logarithm with base</td><td class="latex">\\log_{b} x</td></tr>
+            <tr data-latex="x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}"><td>Quadratic Formula</td><td class="latex">x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}</td></tr>
+            <tr data-latex="\\int_{a}^{b} f(x)\\,dx"><td>Definite Integral</td><td class="latex">\\int_{a}^{b} f(x)\\,dx</td></tr>
+        </tbody>
+    </table>
+</div>
+
+<script>
+// Tab switching
+const tabs = document.querySelectorAll(".tab-button");
+const contents = document.querySelectorAll(".tab-content");
+
+tabs.forEach(tab => {
+    tab.addEventListener("click", () => {
+        tabs.forEach(t => t.classList.remove("active"));
+        contents.forEach(c => c.classList.remove("active"));
+        tab.classList.add("active");
+        document.getElementById(tab.dataset.tab).classList.add("active");
+    });
+});
+
+// Copy-to-clipboard
+document.querySelectorAll("tbody tr").forEach(row => {
+    row.addEventListener("click", e => {
+        const isLatex = e.target.classList.contains("latex");
+        const text = isLatex ? row.dataset.latex : row.dataset.symbol;
+        if (!text) return;
+        navigator.clipboard.writeText(text).then(() => {
+            row.classList.add("copied");
+            setTimeout(() => row.classList.remove("copied"), 700);
+        });
+    });
+});
+</script>
+
+</body>
+</html>
