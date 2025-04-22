@@ -179,5 +179,47 @@
             <p><strong>Algebra is structured reasoning about unknowns.</strong></p>
             <p>It’s the logic of fair transformations, where every move preserves truth. Think of yourself as a symbolic detective 🕵️‍♀️ tracing the steps back to the mystery variable.</p>
         </div>
+
+<!-- Coordinate tooltips -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const svg = document.querySelector('svg');
+        const tooltip = document.createElement('div');
+        tooltip.style.position = 'absolute';
+        tooltip.style.padding = '4px 8px';
+        tooltip.style.background = '#333';
+        tooltip.style.color = 'white';
+        tooltip.style.fontSize = '0.8rem';
+        tooltip.style.borderRadius = '4px';
+        tooltip.style.pointerEvents = 'none';
+        tooltip.style.display = 'none';
+        document.body.appendChild(tooltip);
+
+        const points = [
+            {x: 1, y: 0, label: '(1, 0)'},
+            {x: 0.707, y: 0.707, label: '(√2⁄2, √2⁄2)'},
+            {x: 0, y: 1, label: '(0, 1)'},
+            {x: -0.707, y: 0.707, label: '(-√2⁄2, √2⁄2)'},
+            {x: -1, y: 0, label: '(-1, 0)'},
+            {x: -0.707, y: -0.707, label: '(-√2⁄2, -√2⁄2)'},
+            {x: 0, y: -1, label: '(0, -1)'},
+            {x: 0.707, y: -0.707, label: '(√2⁄2, -√2⁄2)'}
+        ];
+
+        svg.querySelectorAll('circle').forEach((circle, i) => {
+            circle.addEventListener('mouseover', (e) => {
+                tooltip.style.display = 'block';
+                tooltip.textContent = points[i].label;
+            });
+            circle.addEventListener('mousemove', (e) => {
+                tooltip.style.left = (e.pageX + 10) + 'px';
+                tooltip.style.top = (e.pageY + 10) + 'px';
+            });
+            circle.addEventListener('mouseout', () => {
+                tooltip.style.display = 'none';
+            });
+        });
+    });
+</script>
 </body>
 </html>
