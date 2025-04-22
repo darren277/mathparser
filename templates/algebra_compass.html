@@ -4,6 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Algebra Compass</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/3.0.1/plotly.min.js" integrity="sha512-GvBV4yZL+5zT68skQaXRW80H+S82WupIppDunAVt6pCLVdFmTv9tstetOqXv76L/z9WFl+0zY28QFKu0LAVFSg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
     <style>
         body {
             font-family: system-ui, sans-serif;
@@ -200,6 +203,17 @@
                     <tr><td>Reflection over y-axis</td><td>f(-x)</td><td>Mirrors horizontally</td></tr>
                 </tbody>
             </table>
+
+            <h3>📈 Interactive Function Grapher</h3>
+            <p>Enter a function of <code>x</code> to see it plotted below. You can adjust parameters to explore transformations.</p>
+
+            <label><strong>Function</strong> <code>f(x) = </code><input type="text" id="functionInput" value="x**2" style="width: 200px;" /></label>
+            <br />
+            <label><strong>a</strong> (vertical stretch): <input type="range" id="aSlider" min="-5" max="5" step="0.1" value="1" /></label>
+            <label><strong>b</strong> (horizontal stretch): <input type="range" id="bSlider" min="-5" max="5" step="0.1" value="1" /></label>
+            <label><strong>c</strong> (horizontal shift): <input type="range" id="cSlider" min="-10" max="10" step="0.1" value="0" /></label>
+
+            <div id="plot" style="height: 400px;"></div>
         </div>
 
         <div class="card">
@@ -248,6 +262,46 @@
             });
         });
     });
+</script>
+<script>
+    const funcInput = document.getElementById('functionInput');
+    const aSlider = document.getElementById('aSlider');
+    const bSlider = document.getElementById('bSlider');
+    const cSlider = document.getElementById('cSlider');
+
+    function plotFunction() {
+        const expr = funcInput.value;
+        const a = parseFloat(aSlider.value);
+        const b = parseFloat(bSlider.value);
+        const c = parseFloat(cSlider.value);
+
+        const xValues = Array.from({length: 1000}, (_, i) => -10 + i * 0.02);
+        let yValues;
+
+        try {
+            yValues = xValues.map(x => {
+                const transformedX = b * x - c;
+                return a * eval(expr.replace(/x/g, `(${transformedX})`));
+            });
+        } catch (e) {
+            yValues = xValues.map(() => NaN);
+        }
+
+        Plotly.newPlot('plot', [{
+            x: xValues,
+            y: yValues,
+            mode: 'lines',
+            line: { color: '#2c3e50' },
+        }], {
+            margin: { t: 10 },
+            xaxis: { title: 'x' },
+            yaxis: { title: 'f(x)' }
+        });
+    }
+
+    [funcInput, aSlider, bSlider, cSlider].forEach(el => {el.addEventListener('input', plotFunction);});
+
+    plotFunction();
 </script>
 </body>
 </html>
